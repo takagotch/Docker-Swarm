@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  master:
+    image: registry:5000/tky/tododb:latest
+    deploy:
+      replicas: 1
+      placement:
+        contraints: [node.role != manager]
+    environment:
+      MYSQL_ROOT_PASSWORD: tky
+      MYSQL_DATABASE: tododb
+      MYSQL_PASSWORD: tky
+      MYSQL_MASTER: "true"
+    networks:
+     - todoapp
+  
+  slave:
+    image: registry:5000/tky/tododb:latest
+    deploy:
+      replicas: 2
+      placement:
+        constraints: [node.role != manager]
+    deployment_on:
+     - master
+    environmetn:
+      MYSQL_MASTER_HOST: master
+      MYSQL_ROOT_PASSWORD: tky
+      MYSQL_DATABASE: tododb
+      MYSQL_USER: tky
+      MYSQL_PASSWORD: tky
+      MYSQL_REPL_USER: repl
+      MYSQL_REPL_PASSWORD: tky
+    networks:
+     - todoapp
+
+networks:
+  todoapp:
+    external: true
+
+
