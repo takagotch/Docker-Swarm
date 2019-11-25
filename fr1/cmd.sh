@@ -95,4 +95,30 @@ docker container exec -it manager docker stack deploy -c /stack/todo-app.yml tod
 git clone https://github.com/tky/todoweb
 tree .
 
+npm install
+npm run build
+npm run start
+
+
+docker image build -t tky/todoweb:latest .
+docker image tag tky/todoweb:latest localhost:5000/tky/todoweb:latest
+docker image push localhost:5000/tky/todoweb:latest
+
+.nuxt/dist
+
+cp etc/nginx/conf.dpublic.conf.tmpl etc/nginx/conf.d/nuxt.conf.tmpl
+
+docker image build -f Dockerfile-nuxt -f tky/nginx-nuxt:latest .
+docker image tag tky/nginx-nuxt:latest localhost:5000/tky/nginx-nuxt:latest
+docker image push localhost:5000/tky/nginx-nuxt:latest
+
+docker container exec -it manager \
+	docker stack deploy -c /stack/todo-frontend.yml todo_frontend
+
+docker container exec -it manager \
+	docker stack deploy -c /stack/todo-ingress.yml todo_ingress
+
+curl -I http://localhost:8000/
+
+curl -I http://localhost:8000/_nuxt/app.xxx.js
 
