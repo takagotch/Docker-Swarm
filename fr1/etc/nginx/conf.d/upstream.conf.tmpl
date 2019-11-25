@@ -1,0 +1,12 @@
+upstream backend {
+  server {{ var "BACKEND_HOST" }} max_fails={{ var "BACKEND_MAX_FAILS" |
+default "3" }} fail_timeout={{ var "BACKEND_FAIL_TIMEOUT" | default "10s" }};
+}
+
+upstream backend {
+  server 127.0.0.1:8080 max_fails=3 fail_timeout=10s;
+}
+
+
+
+

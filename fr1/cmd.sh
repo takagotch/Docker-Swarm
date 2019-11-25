@@ -86,5 +86,13 @@ cd todonginx
 tree .
 tree .
 
+docker image build -t tky/nginx:latest .
+docker image tag tky/nginx:latest localhost:5000/tky/nginx:latest
+docker image push localhost:5000/tky/nginx:latest
+
+docker container exec -it manager docker stack deploy -c /stack/todo-app.yml todo_app
+
+git clone https://github.com/tky/todoweb
+tree .
 
 
